@@ -3,6 +3,7 @@ import Tiro from "./Tiros.js";
 
 class Jogador {
     constructor(canvasWidth, canvasHeight) {
+        this.alive = true;
         this.width = 48 * 2;
         this.height = 48 * 2;
         this.velocity = 6;
@@ -55,8 +56,24 @@ class Jogador {
 
     }
 
-    shoot() {
-        const t = new Tiro();
+    shoot(tiros) {
+        const t = new Tiro({
+            x: this.position.x + this.width / 2 - 1,
+            y: this.position.y + 2,
+        },
+        -10
+    );
+
+    tiros.push(t)
+    }
+
+    hit(tiro) {
+        return (
+            tiro.position.x >= this.position.x + 20 &&
+            tiro.position.x <= this.position.x + 20 + this.width - 38 &&
+            tiro.position.y >= this.position.y + 22 &&
+            tiro.position.y <= this.position.y + 22 + this.height - 34
+        );
     }
 }
 
