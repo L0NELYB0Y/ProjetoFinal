@@ -39,9 +39,9 @@ class Jogador {
 
 
     draw(ctx) {
-        ctx.drawImage(this.engineSprites, this.sx, 0, 48, 48, this.position.x, this.position.y + 10, this.width, this.height);
+        ctx.drawImage(this.engineSprites, this.sx, 0, 48, 48, this.position.x, this.position.y + 17, this.width, this.height);
         ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
-        ctx.drawImage(this.engineImage, this.position.x, this.position.y + 8, this.width, this.height);
+        ctx.drawImage(this.engineImage, this.position.x, this.position.y + 15, this.width, this.height);
 
         this.update();
     }

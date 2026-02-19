@@ -281,17 +281,17 @@ const gameLoop = () => {
 addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
 
-    if (key === "a") keys.left = true;
-    if (key === "d") keys.right = true;
-    if (key === "enter") keys.shoot.pressed = true;
+    if (key === "arrowleft") keys.left = true;
+    if (key === "arrowright") keys.right = true;
+    if (key === "a") keys.shoot.pressed = true;
 });
 
 addEventListener("keyup", (event) => {
     const key = event.key.toLowerCase();
 
-    if (key === "a") keys.left = false;
-    if (key === "d") keys.right = false;
-    if (key === "enter") {
+    if (key === "arrowleft") keys.left = false;
+    if (key === "arrowright") keys.right = false;
+    if (key === "a") {
         keys.shoot.pressed = false;
         keys.shoot.released = true;
     }
