@@ -297,8 +297,6 @@ addEventListener("keyup", (event) => {
     }
 });
 
-
-
 buttonPlay.addEventListener("click", () => {
     startScreen.remove()
     scoreUi.style.display ="block"

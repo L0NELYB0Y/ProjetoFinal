@@ -5,8 +5,8 @@ class Alien {
     constructor(position, velocity) {
         this.position = position
         this.scale = 0.8;
-        this.width = 50 * this.scale;
-        this.height = 37 * this.scale;
+        this.width = 60 * this.scale;
+        this.height = 47 * this.scale;
         this.velocity = velocity;
 
         this.image = this.getImage(ImagemAlien);
