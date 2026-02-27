@@ -4,4 +4,4 @@ editar musica e add
 cheatcode para por o jogo mais dificil e ao mesmo tempo mudar o sprite dos aliens 
 add timer 30s
 add alien que ao matar dá 15 segundos (alien dourado ou diferente)
-fazer logo
+    
