@@ -13,6 +13,7 @@ class Grid {
     init() {
         const array = []
 
+
         for (let row = 0; row < this.rows; row += 1) {
             for (let col = 0; col < this.cols; col += 1) {
                 const alien = new Alien(
@@ -21,6 +22,8 @@ class Grid {
                         y: row * 37 + 120,
                     },
                     this.aliensVelocity
+                
+                    
                 );
 
                 array.push(alien);
@@ -78,6 +81,26 @@ class Grid {
         this.aliens = this.init();
         this.direction = "right";
     }
+
+    activateCheat() {
+        this.cheatActivated = true;
+        this.aliens = this.init();
+    }
+
+    deactivateCheat() {
+        this.cheatActivated = false;
+        this.aliens = this.init();
+    }
+
+    increaseSpeed() {
+        this.aliensVelocity *= 3;
+
+        this.aliens.forEach(alien => alien.velocity = this.aliensVelocity);
+    }
+
+    alienHard() {
+        this.aliens.forEach(alien => alien.changeImage(ImagemAlienHard)); 
+    };
 }
 
 export default Grid

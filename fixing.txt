@@ -1,0 +1,2 @@
+corrigir//
+sprites que nao mudam e que nao ficam depois de passar de nivel

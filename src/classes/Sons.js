@@ -50,6 +50,7 @@ class Sons {
         this.shootSons.forEach(som => (som.volume = 0.5))
         this.explosionSom.volume = 0.2
         this.explosionSom.volume = 0.4
+        this.nextLevelSom.volume = 0.5
     }
 }
 

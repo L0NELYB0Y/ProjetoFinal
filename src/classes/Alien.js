@@ -1,4 +1,4 @@
-import { ImagemAlien } from "../utils/constantes.js";
+import { ImagemAlien, ImagemAlienHard } from "../utils/constantes.js";
 import Tiro from "./Tiros.js"
 
 class Alien {
@@ -11,7 +11,10 @@ class Alien {
 
         this.image = this.getImage(ImagemAlien);
         
+    }
 
+    changeImage(newImagePath) {
+        this.image = this.getImage(newImagePath);
     }
 
     moveRight() {

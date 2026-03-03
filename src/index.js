@@ -6,6 +6,9 @@ import Obstaculo from "./classes/obstaculo.js";
 import Sons from "./classes/Sons.js";
 
 const som = new Sons();
+const musica = new Audio("src/assets/audios/musica.mp3");
+musica.loop = true;
+musica.volume = 0.4;
 
 const startScreen = document.querySelector(".start-screen");
 const gameOverScreen = document.querySelector(".game-over");
@@ -13,6 +16,7 @@ const scoreUi = document.querySelector(".score-ui");
 const scoreElement = scoreUi.querySelector(".score > span");
 const levelElement = scoreUi.querySelector(".level > span");
 const highElement = scoreUi.querySelector(".high > span");
+const timerElement = scoreUi.querySelector(".timer > span");
 const buttonPlay = document.querySelector(".button-play");
 const buttonRestart = document.querySelector(".button-restart");
 
@@ -32,12 +36,16 @@ const gameData = {
     score: 0,
     level: 1,
     high: 0,
+    timer: 30,
 }
+
+let countdownInterval = null;
 
 const showGameData = () => {
     scoreElement.textContent = gameData.score
     levelElement.textContent = gameData.level
     highElement.textContent = gameData.high
+    timerElement.textContent = gameData.timer + "s"
 }
 
 const jogador = new Jogador(canvas.width, canvas.height);
@@ -117,7 +125,9 @@ const clearParticles = () => {
     });
 }
 
-const criarExplosao = (position, size, color) => {
+let particleColor = "#8ea961f8";
+
+const criarExplosao = (position, size) => {
     for (let i = 0; i < size; i += 1) {
         const particle = new Particle(
             {
@@ -129,7 +139,7 @@ const criarExplosao = (position, size, color) => {
                y: Math.random() - 0.5 * 1.5, 
             },
             2,
-            color
+            particleColor
         );
 
         particles.push(particle);
@@ -147,7 +157,7 @@ const checkShootAliens = () => {
                         x: alien.position.x + alien.width / 2,
                         y: alien.position.y + alien.height / 2,
                     },
-                    10,
+                    45,
                     "#8ea961f8"
                 );
 
@@ -197,22 +207,86 @@ const spawnGrid = () => {
         grid.restart();
 
         gameData.level += 1
+        gameData.timer += 15
     }
 };
 
-
-
 const gameOver = () => {
+
+    clearInterval(countdownInterval);
+    stopMusica();
+
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
+
+
 
    currentState = GameState.GAMEOVER;
     jogador.alive = false;
     document.body.append(gameOverScreen)
 };
 
-const gameLoop = () => {
+const startTimer = () => {
+    gameData.timer = 30;
+
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+
+    countdownInterval = setInterval(() => {
+        if (currentState !== GameState.PLAYING) return;
+
+        if (gameData.timer > 0) {
+            gameData.timer--;
+        }
+        else {
+            clearInterval(countdownInterval);
+            gameOver();
+        }
+            
+    }, 1000);
+};
+
+const playMusica = () => {
+    musica.currentTime = 0;
+    musica.play().catch(() => {});
+};
+
+const stopMusica = () => {
+    musica.pause();
+}
+
+const cheatCode = "hard";
+let enteredCode = "";
+let cheatActivated = false;
+
+const activateCheatCode = () => {
+    if (!cheatActivated) {
+
+        cheatActivated = true;
+
+        particleColor = "#e31616";
+        grid.activateCheat();
+        grid.increaseSpeed();
+        grid.alienHard();
+
+    };
+}
+    addEventListener("keydown", (event) => {
+        enteredCode += event.key.toLowerCase();
+
+        if (enteredCode === cheatCode) {
+            activateCheatCode();
+            enteredCode = "";
+        }
+
+        if (!cheatCode.startsWith(enteredCode)) {
+            enteredCode = "";
+        }
+    });
+
+    const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (currentState == GameState.PLAYING) {
@@ -225,7 +299,7 @@ const gameLoop = () => {
     
     clearTiros();
     clearParticles();
-    
+
     checkShootJogador();
     checkShootAliens();
     checkShootObstaculos();
@@ -302,6 +376,9 @@ buttonPlay.addEventListener("click", () => {
     scoreUi.style.display ="block"
     currentState = GameState.PLAYING
 
+    playMusica();
+    startTimer();
+
     setInterval(() => {
     const alien = grid.getRandomAlien();
 
@@ -316,7 +393,7 @@ buttonRestart.addEventListener("click", () => {
   jogador.alive = true
   
   grid.aliens.length = 0
-  grid.aliensVelocity = 1
+  grid.aliensVelocity = 1;
 
   aliensTiros.length = 0
 
@@ -324,6 +401,15 @@ buttonRestart.addEventListener("click", () => {
   gameData.level = 0
 
   gameOverScreen.remove()
+
+  playMusica();
+  startTimer();
+
+  cheatActivated = false;
+  enteredCode = "";
+
+  particleColor = "#8ea961f8";
+
 });
 
 gameLoop();
