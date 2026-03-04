@@ -266,10 +266,9 @@ const activateCheatCode = () => {
 
         cheatActivated = true;
 
-        particleColor = "#e31616";
+        particleColor = "#8ea961f8";
         grid.activateCheat();
         grid.increaseSpeed();
-        grid.alienHard();
 
     };
 }
@@ -404,12 +403,10 @@ buttonRestart.addEventListener("click", () => {
 
   playMusica();
   startTimer();
-
   cheatActivated = false;
   enteredCode = "";
 
   particleColor = "#8ea961f8";
-
 });
 
 gameLoop();

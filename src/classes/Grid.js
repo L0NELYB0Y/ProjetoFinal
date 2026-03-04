@@ -81,8 +81,7 @@ class Grid {
         this.aliens = this.init();
         this.direction = "right";
     }
-
-    activateCheat() {
+        activateCheat() {
         this.cheatActivated = true;
         this.aliens = this.init();
     }
@@ -93,14 +92,10 @@ class Grid {
     }
 
     increaseSpeed() {
-        this.aliensVelocity *= 3;
+        this.aliensVelocity *= 5;
 
         this.aliens.forEach(alien => alien.velocity = this.aliensVelocity);
     }
-
-    alienHard() {
-        this.aliens.forEach(alien => alien.changeImage(ImagemAlienHard)); 
-    };
 }
 
 export default Grid
