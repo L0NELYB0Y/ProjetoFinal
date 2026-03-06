@@ -125,9 +125,7 @@ const clearParticles = () => {
     });
 }
 
-let particleColor = "#8ea961f8";
-
-const criarExplosao = (position, size) => {
+const criarExplosao = (position, size, color) => {
     for (let i = 0; i < size; i += 1) {
         const particle = new Particle(
             {
@@ -139,7 +137,7 @@ const criarExplosao = (position, size) => {
                y: Math.random() - 0.5 * 1.5, 
             },
             2,
-            particleColor
+            color
         );
 
         particles.push(particle);
@@ -220,8 +218,6 @@ const gameOver = () => {
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
 
-
-
    currentState = GameState.GAMEOVER;
     jogador.alive = false;
     document.body.append(gameOverScreen)
@@ -266,7 +262,6 @@ const activateCheatCode = () => {
 
         cheatActivated = true;
 
-        particleColor = "#8ea961f8";
         grid.activateCheat();
         grid.increaseSpeed();
 
@@ -391,13 +386,16 @@ buttonRestart.addEventListener("click", () => {
   currentState = GameState.PLAYING
   jogador.alive = true
   
-  grid.aliens.length = 0
+  grid.rows = 3
+  grid.cols = 6
+  grid.restart()
+
   grid.aliensVelocity = 1;
 
   aliensTiros.length = 0
 
   gameData.score = 0
-  gameData.level = 0
+  gameData.level = 1
 
   gameOverScreen.remove()
 
@@ -406,7 +404,6 @@ buttonRestart.addEventListener("click", () => {
   cheatActivated = false;
   enteredCode = "";
 
-  particleColor = "#8ea961f8";
 });
 
 gameLoop();
