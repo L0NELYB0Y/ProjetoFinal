@@ -1,4 +1,4 @@
-import Alien from "./alien.js";
+import Alien from "./Alien.js";
 class Grid {
     constructor(rows, cols) {
         this.rows = rows;

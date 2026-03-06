@@ -2,7 +2,7 @@ import Grid from "./classes/Grid.js"
 import Jogador from "./classes/Jogador.js";
 import Particle from "./classes/Particle.js";
 import { GameState } from "./utils/constantes.js";
-import Obstaculo from "./classes/obstaculo.js";
+import Obstaculo from "./classes/Obstaculo.js";
 import Sons from "./classes/Sons.js";
 
 const som = new Sons();
