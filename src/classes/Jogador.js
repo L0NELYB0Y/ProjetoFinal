@@ -20,6 +20,9 @@ class Jogador {
         this.sx = 0;
         this.framesCounter = FramesIniciais;
 
+        this.invincible = false;
+        this.invincibilityTimer = 0;
+        this.blink = false;
 
     }
 
@@ -38,23 +41,36 @@ class Jogador {
     }
 
 
-    draw(ctx) {
+   draw(ctx) {
+    this.update(); 
+
+    if (!(this.invincible && this.blink)) {
         ctx.drawImage(this.engineSprites, this.sx, 0, 48, 48, this.position.x, this.position.y + 30, this.width, this.height);
         ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
         ctx.drawImage(this.engineImage, this.position.x, this.position.y + 30, this.width, this.height);
-
-        this.update();
     }
+}
 
     update() {
-        if (this.framesCounter === 0) {
-            this.sx = this.sx === 96 ? 0 : this.sx + 48;
-            this.framesCounter = FramesIniciais;
+    if (this.framesCounter === 0) {
+        this.sx = this.sx === 96 ? 0 : this.sx + 48;
+        this.framesCounter = FramesIniciais;
+    }
+    this.framesCounter--;
+
+    if (this.invincible) {
+        this.invincibilityTimer--;
+
+        if (this.invincibilityTimer % 5 === 0) {
+            this.blink = !this.blink;
         }
 
-        this.framesCounter --;
-
+        if (this.invincibilityTimer <= 0) {
+            this.invincible = false;
+            this.blink = false;
+        }
     }
+}
 
     shoot(tiros) {
         const t = new Tiro({

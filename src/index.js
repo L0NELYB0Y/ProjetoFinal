@@ -21,6 +21,7 @@ const scoreElement = scoreUi.querySelector(".score > span");
 const levelElement = scoreUi.querySelector(".level > span");
 const highElement = scoreUi.querySelector(".high > span");
 const timerElement = scoreUi.querySelector(".timer > span");
+const livesElement = document.querySelector(".lives > span");
 const buttonPlay = document.querySelector(".button-play");
 const buttonRestart = document.querySelector(".button-restart");
 
@@ -41,6 +42,7 @@ const gameData = {
     level: 1,
     high: 0,
     timer: 45,
+    lives: 3,
 }
 
 let countdownInterval = null;
@@ -50,6 +52,7 @@ const showGameData = () => {
     levelElement.textContent = gameData.level
     highElement.textContent = gameData.high
     timerElement.textContent = gameData.timer + "s"
+    livesElement.textContent = gameData.lives
 }
 
 const jogador = new Jogador(canvas.width, canvas.height);
@@ -62,16 +65,26 @@ const particles = [];
 const obstaculos = [];
 
 const initObstaculos = () => {
-    const x = canvas.width / 2 - 50;
+
+    obstaculos.length = 0;
+
+    const quantidade = Math.floor(Math.random() * 3) + 2;
+    
     const y = canvas.height - 250;
-    const offset = canvas.width * 0.15;
     const color = "crimson";
 
-    const obstaculo1 = new Obstaculo({ x: x - offset, y }, 100, 20, color);
-    const obstaculo2 = new Obstaculo({ x: x + offset, y }, 100, 20, color);
+    for (let i = 0; i < quantidade; i++) {
+        const x = Math.random() * (canvas.width - 120);
 
-    obstaculos.push(obstaculo1);
-    obstaculos.push(obstaculo2);
+        const obstaculo = new Obstaculo(
+            {x: x, y: y },
+            100,
+            20,
+            color
+        );
+
+        obstaculos.push(obstaculo);
+    }
 };
 
 initObstaculos();
@@ -176,7 +189,7 @@ const checkShootAliens = () => {
                         y: alien.position.y + alien.height / 2,
                     },
                     45,
-                    "#8ea961f8"
+                    "#5c9747"
                 );
 
                 incrementScore(10)
@@ -191,13 +204,43 @@ const checkShootAliens = () => {
 
 const checkShootJogador = () => {
     aliensTiros.some((tiro, i) => {
-        if (jogador.hit(tiro)) {
-            som.playExplosionSom();
+
+        if (!jogador.invincible && jogador.hit(tiro)) {
+
             aliensTiros.splice(i, 1);
-            gameOver();
+
+            som.playExplosionSom();
+
+            gameData.lives--;
+            if (gameData.lives < 0) gameData.lives = 0;
+            showGameData();
+
+            criarExplosao(
+                { x: jogador.position.x + jogador.width/2, y: jogador.position.y + jogador.height/2 },
+                10,
+                "white"
+            );
+            criarExplosao(
+                { x: jogador.position.x + jogador.width/2, y: jogador.position.y + jogador.height/2 },
+                10,
+                "white"
+            );
+            criarExplosao(
+                { x: jogador.position.x + jogador.width/2, y: jogador.position.y + jogador.height/2 },
+                10,
+                "white"
+            );
+
+            jogador.invincible = true;
+            jogador.invincibilityTimer = 120;
+            jogador.blink = true;
+
+            if (gameData.lives <= 0) {
+                gameOver();
+            }
         }
-    })
-}
+    });
+};
 
 const checkShootObstaculos = () => {
     obstaculos.forEach((obstaculo) => {
@@ -436,7 +479,13 @@ buttonRestart.addEventListener("click", () => {
 
   gameData.score = 0
   gameData.level = 1
+  gameData.lives = 3
 
+  jogador.invincible = false;
+  jogador.invincibilityTimer = 0;
+  jogador.blink = false;
+
+  initObstaculos();
   gameOverScreen.remove()
 
   playMusica();
@@ -444,6 +493,8 @@ buttonRestart.addEventListener("click", () => {
   startTimer();
   cheatActivated = false;
   enteredCode = "";
+
+  grid.deactivateCheat();
 
 });
 
