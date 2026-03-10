@@ -13,7 +13,7 @@
             <span class="score">pontuação: <span>0</span></span>
             <span class="level">nivel: <span>1</span></span>
             <span class="high">maximo: <span>0</span></span>
-            <span class="timer">tempo: <span>30s</span></span>
+            <span class="timer">tempo: <span>45s</span></span>
         </div>
     </section>
 
@@ -34,20 +34,5 @@
 
     <canvas></canvas>
     <script type="module" src="src/index.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const numStars = 100;
-            const container = document.body;
-
-            for (let i = 0; i < numStars; i++) {
-                let star = document.createElement("div");
-                star.classList.add("star");
-                star.style.top = Math.random() * window.innerHeight + "px";
-                star.style.left = Math.random() * window.innerWidth + "px";
-                star.style.animationDuration = (Math.random() * 2 + 1) + "s";
-                container.appendChild(star);
-            }
-        })
-    </script>
 </body>
 </html>

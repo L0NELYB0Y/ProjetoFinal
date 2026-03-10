@@ -1,14 +1,18 @@
 import Grid from "./classes/Grid.js"
 import Jogador from "./classes/Jogador.js";
 import Particle from "./classes/Particle.js";
-import { GameState } from "./utils/constantes.js";
+import { GameState, NUMBER_ESTRELAS } from "./utils/constantes.js";
 import Obstaculo from "./classes/Obstaculo.js";
 import Sons from "./classes/Sons.js";
+import Estrela from "./classes/Estrelas.js";
 
 const som = new Sons();
 const musica = new Audio("src/assets/audios/musica.mp3");
+const gameovermusic = new Audio ("src/assets/audios/gameover.mp3");
 musica.loop = true;
 musica.volume = 0.4;
+gameovermusic.volume = 0.4;
+
 
 const startScreen = document.querySelector(".start-screen");
 const gameOverScreen = document.querySelector(".game-over");
@@ -36,7 +40,7 @@ const gameData = {
     score: 0,
     level: 1,
     high: 0,
-    timer: 30,
+    timer: 45,
 }
 
 let countdownInterval = null;
@@ -49,8 +53,9 @@ const showGameData = () => {
 }
 
 const jogador = new Jogador(canvas.width, canvas.height);
-const grid = new Grid(3, 6); 
+const grid = new Grid(3, 6);
 
+const estrelas = [];
 const jogadorTiros = [];
 const aliensTiros = [];
 const particles = [];
@@ -91,6 +96,21 @@ const incrementScore = (value) => {
 const drawObstaculos = () => {
     obstaculos.forEach((obstaculo) => obstaculo.draw(ctx));
 };
+
+const generateEstrelas = () => {
+    for (let i = 0; i < NUMBER_ESTRELAS; i += 1) {
+        estrelas.push(new Estrela(canvas.width, canvas.height));
+    }
+};
+
+const drawEstrelas = () => {
+    estrelas.forEach((estrela) => {
+        estrela.draw(ctx);
+        estrela.update();
+    });
+};
+
+
 
 const drawTiros = () => {
     const tiros = [...jogadorTiros, ...aliensTiros];
@@ -206,6 +226,13 @@ const spawnGrid = () => {
 
         gameData.level += 1
         gameData.timer += 15
+
+        if (gameData.level >= 9) {
+            grid.aliensVelocity += 0.5;
+        }
+
+        grid.restart();
+
     }
 };
 
@@ -213,6 +240,7 @@ const gameOver = () => {
 
     clearInterval(countdownInterval);
     stopMusica();
+    playGameovermusic();
 
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
     criarExplosao({ x: jogador.position.x + jogador.width / 2, y: jogador.position.y + jogador.height / 2, }, 10, "white");
@@ -224,7 +252,7 @@ const gameOver = () => {
 };
 
 const startTimer = () => {
-    gameData.timer = 30;
+    gameData.timer = 45;
 
     if (countdownInterval) {
         clearInterval(countdownInterval);
@@ -251,6 +279,15 @@ const playMusica = () => {
 
 const stopMusica = () => {
     musica.pause();
+}
+
+const playGameovermusic = () => {
+    gameovermusic.currentTime = 0;
+    gameovermusic.play().catch(() => {});
+};
+
+const stopGameovermusic = () => {
+    gameovermusic.pause();
 }
 
 const cheatCode = "hard";
@@ -282,6 +319,8 @@ const activateCheatCode = () => {
 
     const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawEstrelas();
 
     if (currentState == GameState.PLAYING) {
     showGameData();
@@ -372,6 +411,7 @@ buttonPlay.addEventListener("click", () => {
 
     playMusica();
     startTimer();
+    stopGameovermusic();
 
     setInterval(() => {
     const alien = grid.getRandomAlien();
@@ -400,10 +440,12 @@ buttonRestart.addEventListener("click", () => {
   gameOverScreen.remove()
 
   playMusica();
+  stopGameovermusic();
   startTimer();
   cheatActivated = false;
   enteredCode = "";
 
 });
 
+generateEstrelas();
 gameLoop();
