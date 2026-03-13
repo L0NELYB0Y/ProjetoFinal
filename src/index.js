@@ -87,11 +87,14 @@ const initObstaculos = () => {
     }
 };
 
+
 initObstaculos();
 
 const keys = {
     left: false,
     right: false,
+    up: false,
+    down: false,
     shoot: {
         pressed: false,
         released: true
@@ -260,6 +263,20 @@ const checkShootObstaculos = () => {
     });
 }
 
+const checkJogadorObstaculos = (newX, newY) => {
+    for (let obstaculo of obstaculos) {
+        if (
+            newX < obstaculo.position.x + obstaculo.width &&
+            newX + jogador.width > obstaculo.position.x &&
+            newY < obstaculo.position.y + obstaculo.height &&
+            newY + jogador.height > obstaculo.position.y
+        ) {
+            return true; // existe colisão, bloqueia movimento
+        }
+    }
+    return false; // não há colisão
+};
+
 const spawnGrid = () => {
     if (grid.aliens.length === 0) {
         som.playNextLevelSom();
@@ -360,6 +377,8 @@ const activateCheatCode = () => {
         }
     });
 
+const limiteObstaculos = canvas.height - 225;
+
     const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -403,6 +422,16 @@ const activateCheatCode = () => {
         ctx.rotate(0.15);
     }
 
+    if (keys.up && jogador.position.y > limiteObstaculos) {
+        jogador.position.y -= 5;
+    }
+
+    if (keys.down && jogador.position.y <= canvas.height - jogador.height) {
+    jogador.position.y += 5;
+}
+
+    checkJogadorObstaculos();
+
     ctx.translate(-jogador.position.x - jogador.width / 2, -jogador.position.y - jogador.height / 2);
 
 
@@ -433,6 +462,8 @@ addEventListener("keydown", (event) => {
 
     if (key === "arrowleft") keys.left = true;
     if (key === "arrowright") keys.right = true;
+    if (key === "arrowup") keys.up = true;
+    if (key === "arrowdown") keys.down = true;
     if (key === "a") keys.shoot.pressed = true;
 });
 
@@ -441,6 +472,8 @@ addEventListener("keyup", (event) => {
 
     if (key === "arrowleft") keys.left = false;
     if (key === "arrowright") keys.right = false;
+    if (key === "arrowup") keys.up = false;
+    if (key === "arrowdown") keys.down = false;
     if (key === "a") {
         keys.shoot.pressed = false;
         keys.shoot.released = true;
